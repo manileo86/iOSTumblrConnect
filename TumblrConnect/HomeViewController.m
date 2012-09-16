@@ -8,6 +8,7 @@
 
 #import "HomeViewController.h"
 #import "TumblrUtil.h"
+#import "Reachability.h"
 
 @interface HomeViewController ()
 {
@@ -29,10 +30,29 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    self.view.userInteractionEnabled = [[Reachability reachabilityForInternetConnection] isReachable];
+    
     if([TumblrUtil isTumblrConfigured])
     {
         [self showSuccessfulLogin];
     }
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(void)reachabilityChanged
+{
+    self.view.userInteractionEnabled = [[Reachability reachabilityForInternetConnection] isReachable];
 }
 
 - (void)viewDidUnload
