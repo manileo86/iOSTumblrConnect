@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "AsyncImageView.h"
+#import "TumblrUser.h"
+#import "TumblrUtil.h"
 
-@interface ProfileViewController : UIViewController
+@interface ProfileViewController : UIViewController<TumblrUtilDelegate>
+{
+    TumblrUtil *tumblrUtil;
+}
 
+@property (retain, nonatomic) TumblrUser *tumblrUser;
 @property (retain, nonatomic) IBOutlet UILabel *usernameLabel;
-@property (retain, nonatomic) IBOutlet UILabel *blognameLabel;
+@property (retain, nonatomic) IBOutlet UILabel *followingCountLabel;
 @property (retain, nonatomic) IBOutlet AsyncImageView *userImageView;
 @end

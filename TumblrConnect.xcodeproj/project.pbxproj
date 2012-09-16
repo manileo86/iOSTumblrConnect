@@ -45,6 +45,8 @@
 		8C459D3616062908003C06FA /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8C459D0D16062908003C06FA /* ProfileViewController.xib */; };
 		8C459D3716062908003C06FA /* TumblrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C459D0F16062908003C06FA /* TumblrViewController.m */; };
 		8C459D3816062908003C06FA /* TumblrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8C459D1016062908003C06FA /* TumblrViewController.xib */; };
+		8C459D3B16062E73003C06FA /* TumblrUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C459D3A16062E73003C06FA /* TumblrUser.m */; };
+		8C459D3E16063666003C06FA /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C459D3D16063666003C06FA /* Utils.m */; };
 		8C6188C916047F7D00EC6A6C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C6188C816047F7D00EC6A6C /* UIKit.framework */; };
 		8C6188CB16047F7D00EC6A6C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C6188CA16047F7D00EC6A6C /* Foundation.framework */; };
 		8C6188CD16047F7D00EC6A6C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C6188CC16047F7D00EC6A6C /* CoreGraphics.framework */; };
@@ -141,6 +143,10 @@
 		8C459D0E16062908003C06FA /* TumblrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TumblrViewController.h; sourceTree = "<group>"; };
 		8C459D0F16062908003C06FA /* TumblrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TumblrViewController.m; sourceTree = "<group>"; };
 		8C459D1016062908003C06FA /* TumblrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TumblrViewController.xib; sourceTree = "<group>"; };
+		8C459D3916062E73003C06FA /* TumblrUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TumblrUser.h; sourceTree = "<group>"; };
+		8C459D3A16062E73003C06FA /* TumblrUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TumblrUser.m; sourceTree = "<group>"; };
+		8C459D3C16063666003C06FA /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		8C459D3D16063666003C06FA /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
 		8C6188C416047F7D00EC6A6C /* TumblrConnect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TumblrConnect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C6188C816047F7D00EC6A6C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8C6188CA16047F7D00EC6A6C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -206,6 +212,8 @@
 		8C459CB916062908003C06FA /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8C459D3916062E73003C06FA /* TumblrUser.h */,
+				8C459D3A16062E73003C06FA /* TumblrUser.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -234,6 +242,8 @@
 			isa = PBXGroup;
 			children = (
 				8C459CC416062908003C06FA /* Constants.h */,
+				8C459D3C16063666003C06FA /* Utils.h */,
+				8C459D3D16063666003C06FA /* Utils.m */,
 				8C459CCE16062908003C06FA /* TumblrUtil.h */,
 				8C459CCF16062908003C06FA /* TumblrUtil.m */,
 				8C459CC516062908003C06FA /* ImageUtils */,
@@ -342,12 +352,12 @@
 				8C459D0816062908003C06FA /* HomeViewController.h */,
 				8C459D0916062908003C06FA /* HomeViewController.m */,
 				8C459D0A16062908003C06FA /* HomeViewController.xib */,
-				8C459D0B16062908003C06FA /* ProfileViewController.h */,
-				8C459D0C16062908003C06FA /* ProfileViewController.m */,
-				8C459D0D16062908003C06FA /* ProfileViewController.xib */,
 				8C459D0E16062908003C06FA /* TumblrViewController.h */,
 				8C459D0F16062908003C06FA /* TumblrViewController.m */,
 				8C459D1016062908003C06FA /* TumblrViewController.xib */,
+				8C459D0B16062908003C06FA /* ProfileViewController.h */,
+				8C459D0C16062908003C06FA /* ProfileViewController.m */,
+				8C459D0D16062908003C06FA /* ProfileViewController.xib */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -498,6 +508,8 @@
 				8C459D3316062908003C06FA /* HomeViewController.m in Sources */,
 				8C459D3516062908003C06FA /* ProfileViewController.m in Sources */,
 				8C459D3716062908003C06FA /* TumblrViewController.m in Sources */,
+				8C459D3B16062E73003C06FA /* TumblrUser.m in Sources */,
+				8C459D3E16063666003C06FA /* Utils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

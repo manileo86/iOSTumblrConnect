@@ -7,8 +7,11 @@
 //
 
 #import "HomeViewController.h"
+#import "ProfileViewController.h"
 #import "TumblrUtil.h"
 #import "Reachability.h"
+#import "Utils.h"
+#import "TumblrUser.h"
 
 @interface HomeViewController ()
 {
@@ -83,7 +86,18 @@
 
 -(IBAction)continuePressed:(id)sender
 {
-    
+    TumblrUser *tumblrUser = [Utils currentUser];
+    if(tumblrUser)
+    {
+        ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
+        profileViewController.tumblrUser = tumblrUser;
+        [self.navigationController pushViewController:profileViewController animated:YES];
+        [profileViewController release];
+    }
+    else
+    {
+        [self logoutAction];
+    }
 }
 
 #pragma mark -
@@ -107,7 +121,14 @@
 
 -(void)showSuccessfulLogin
 {
-    [usernameLabel setText:[TumblrUtil getBlogName]];
+    TumblrUser *tumblrUser = [Utils currentUser];
+    if(tumblrUser==nil)
+    {
+        [self logoutAction];
+        return;
+    }
+    
+    [usernameLabel setText:tumblrUser.username];
     loggedInAsLabel.alpha = 1.0;
     usernameLabel.alpha = 1.0;
     [UIView animateWithDuration:0.45
@@ -153,6 +174,7 @@
     
     loggedIn = NO;
     [TumblrUtil setTumblrConfigured:NO];
+    [Utils saveCurrentUser:nil];
 }
 
 - (void)dealloc

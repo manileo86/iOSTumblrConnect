@@ -96,7 +96,7 @@
 {
     if(status)
     {
-        OAToken *reqToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrRequestTokenDefaultsKey prefix:@"Fontli"];
+        OAToken *reqToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrRequestTokenDefaultsKey prefix:@"TumblrConnect"];
         
         [webView loadRequest:
          [NSURLRequest requestWithURL:
@@ -152,18 +152,24 @@
 {
     NSLog(@"TumblrViewController : viewDidUnload");
     
-    [self setLoadingView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
     
     self.webView = nil;
     self.loadingIndicatorView = nil;
+    [self setLoadingView:nil];
+
+    tumblrUtil.delegate = nil;
+    [tumblrUtil release];
+    tumblrUtil = nil;
 }
 
 -(void) dealloc
 {
     NSLog(@"TumblrViewController : dealloc");
+    tumblrUtil.delegate = nil;
+    [tumblrUtil release];
+    tumblrUtil = nil;
     
     delegate = nil;
     [webView release];

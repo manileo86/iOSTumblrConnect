@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #define MEMORY_CACHE_SIZE 0
-#define IMAGE_CACHE_FOLDER_NAME @"Fontli"
+#define IMAGE_CACHE_FOLDER_NAME @"TumblrConnect"
 
 // 10 days in seconds
 #define IMAGE_FILE_LIFETIME 864000.0

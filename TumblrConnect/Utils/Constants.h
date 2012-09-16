@@ -30,8 +30,11 @@
 #define kTumblrAccessTokenTokenURL                 @"http://www.tumblr.com/oauth/access_token"
 #define kTumblrAccessTokenDefaultsKey              @"tumblr_accesstoken_key"
 
-#define kTumblrBlogNameDefaultsKey                 @"tumblr_blogname_key"
+#define kTumblrCurrentUserDefaultsKey              @"tumblr_current_user_key"
 
 #define kTumblrInfoURL                             @"http://api.tumblr.com/v2/user/info"
+
+// should be one of {16, 24, 30, 40, 48, 64, 96, 128, 512}
+#define kTumblrAvatarSize                          @"96"
 
 #define kTumblrLogoutURL                           @"http://www.tumblr.com/logout"

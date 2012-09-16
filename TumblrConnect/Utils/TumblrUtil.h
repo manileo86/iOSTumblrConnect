@@ -23,16 +23,16 @@
 
 +(void)setTumblrConfigured:(BOOL)configured;
 +(BOOL)isTumblrConfigured;
-+(NSString*)getBlogName;
 
 -(id)initWithDelegate:(id)_delegate;
 
 -(void)requestOAuthToken;
 -(void)requestAccessToken;
--(void)requestBlogName;
+-(void)requestBlogHostName;
 -(void)sharePhotoOnTumblrWithUrl:(NSString *)originalURL
                         permalink:(NSString *)permalink
                           caption:(NSString *)caption;
+-(void)requestAvatar;
 
 -(void)logout;
 
@@ -44,5 +44,6 @@
 -(void)requestTokenStatus:(BOOL)status;
 -(void)accessTokenStatus:(BOOL)status;
 -(void)tumblrPostStatus:(BOOL)status;
+-(void)tumblrAvatarStatus:(BOOL)status;
 
 @end

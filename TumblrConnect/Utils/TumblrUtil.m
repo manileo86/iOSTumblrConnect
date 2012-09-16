@@ -11,6 +11,7 @@
 #import "ASIFormDataRequest.h"
 #import "Constants.h"
 #import "ResponseParser.h"
+#import "Utils.h"
 
 @implementation TumblrUtil
 
@@ -25,11 +26,6 @@
 +(BOOL)isTumblrConfigured
 {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kIsTumblrConfigured];
-}
-
-+(NSString*)getBlogName
-{
-    return [[NSUserDefaults standardUserDefaults] valueForKey:kTumblrBlogNameDefaultsKey];
 }
 
 -(id)initWithDelegate:(id)_delegate
@@ -70,14 +66,14 @@
 
 - (void)requestTokenTicket:(OAServiceTicket *)ticket didFinishWithData:(NSData *)data
 {
-    if (ticket.didSucceed) 
-    {        
+    if (ticket.didSucceed)
+    {
         if(delegate && [delegate respondsToSelector:@selector(requestTokenStatus:)])
         {
             NSString *responseBody = [[NSString alloc] initWithData:data
                                                            encoding:NSUTF8StringEncoding];
             OAToken *oaRequestToken = [[OAToken alloc] initWithHTTPResponseBody:responseBody];
-            [oaRequestToken storeInUserDefaultsWithServiceProviderName:kTumblrRequestTokenDefaultsKey prefix:@"Fontli"];
+            [oaRequestToken storeInUserDefaultsWithServiceProviderName:kTumblrRequestTokenDefaultsKey prefix:@"TumblrConnect"];
             [oaRequestToken release];
             
             [delegate requestTokenStatus:YES];
@@ -104,7 +100,7 @@
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@",kTumblrAccessTokenTokenURL]];
     
-    OAToken *reqToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrRequestTokenDefaultsKey prefix:@"Fontli"];
+    OAToken *reqToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrRequestTokenDefaultsKey prefix:@"TumblrConnect"];
     reqToken.pin = [[NSUserDefaults standardUserDefaults] valueForKey:kTumblrVerifierTokenDefaultsKey];
     
     OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:url
@@ -127,15 +123,15 @@
 
 - (void)accessTokenTicket:(OAServiceTicket *)ticket didFinishWithData:(NSData *)data
 {
-    if (ticket.didSucceed) 
-    {   
+    if (ticket.didSucceed)
+    {
         NSString *responseBody = [[NSString alloc] initWithData:data
                                                        encoding:NSUTF8StringEncoding];
         OAToken *aToken = [[OAToken alloc] initWithHTTPResponseBody:responseBody];
-        [aToken storeInUserDefaultsWithServiceProviderName:kTumblrAccessTokenDefaultsKey prefix:@"Fontli"];
+        [aToken storeInUserDefaultsWithServiceProviderName:kTumblrAccessTokenDefaultsKey prefix:@"TumblrConnect"];
         [aToken release];
         
-        [self requestBlogName];
+        [self requestBlogHostName];
     }
 }
 
@@ -151,14 +147,14 @@
 
 #pragma mark - Tumblr Blog name
 
--(void)requestBlogName
+-(void)requestBlogHostName
 {
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kTumblrConsumerKey
                                                     secret:kTumblrConsumerSecret];
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@",kTumblrInfoURL]];
     
-    OAToken *authToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrAccessTokenDefaultsKey prefix:@"Fontli"];
+    OAToken *authToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrAccessTokenDefaultsKey prefix:@"TumblrConnect"];
     
     OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:url
                                                                    consumer:consumer
@@ -180,18 +176,25 @@
 
 - (void)infoTicket:(OAServiceTicket *)ticket didFinishWithData:(NSData *)data
 {
-    if (ticket.didSucceed) 
-    {   
+    if (ticket.didSucceed)
+    {
         if(delegate && [delegate respondsToSelector:@selector(accessTokenStatus:)])
         {
-            // parse info            
+            // parse info
             NSString *responseBody = [[NSString alloc] initWithData:data
                                                            encoding:NSUTF8StringEncoding];
-            NSString *blogname = [ResponseParser parseTumblrBlogNameResponse:responseBody];
-            [[NSUserDefaults standardUserDefaults] setValue:blogname forKey:kTumblrBlogNameDefaultsKey];            
-            
-            [TumblrUtil setTumblrConfigured:YES];
-            [delegate accessTokenStatus:YES];
+            TumblrUser *tumblrUser = [ResponseParser parseTumblrUserInfoResponse:responseBody];
+            if(tumblrUser)
+            {
+                [Utils saveCurrentUser:tumblrUser];
+                [TumblrUtil setTumblrConfigured:YES];
+                [delegate accessTokenStatus:YES];
+            }
+            else
+            {
+                [TumblrUtil setTumblrConfigured:NO];
+                [delegate accessTokenStatus:NO];
+            }
         }
     }
 }
@@ -211,28 +214,29 @@
 - (void)sharePhotoOnTumblrWithUrl:(NSString *)originalURL
                         permalink:(NSString *)permalink
                           caption:(NSString *)caption
-{    
-    OAToken *authToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrAccessTokenDefaultsKey prefix:@"Fontli"];
+{
+    OAToken *authToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrAccessTokenDefaultsKey prefix:@"TumblrConnect"];
     
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kTumblrConsumerKey
                                                     secret:kTumblrConsumerSecret];
     
-    NSString *blogname = [[NSUserDefaults standardUserDefaults] valueForKey:kTumblrBlogNameDefaultsKey];
-    NSString *requestUrl = [NSString stringWithFormat:@"http://api.tumblr.com/v2/blog/%@.tumblr.com/post", blogname];
+    TumblrUser *tumblrUser = [Utils currentUser];
+    NSString *username = (tumblrUser!=nil)?tumblrUser.username:@"";
+    NSString *requestUrl = [NSString stringWithFormat:@"http://api.tumblr.com/v2/blog/%@.tumblr.com/post", username];
     
     OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:requestUrl]
-                                                                    consumer:consumer
-                                                                       token:authToken
-                                                                       realm:@"http://api.tumblr.com"
-                                                           signatureProvider:nil];
+                                                                   consumer:consumer
+                                                                      token:authToken
+                                                                      realm:@"http://api.tumblr.com"
+                                                          signatureProvider:nil];
     
     [request setHTTPMethod:@"POST"];
-        
+    
     if(!caption)
     {
         caption = @"Tumblr post";
     }
-        
+    
     [request setParameters:[NSArray arrayWithObjects:
                             [OARequestParameter requestParameterWithName:@"type" value:@"photo"],
                             [OARequestParameter requestParameterWithName:@"caption" value:caption],
@@ -251,8 +255,8 @@
     [postRequest addPostValue:@"photo" forKey:@"type"];
     [postRequest addPostValue:caption forKey:@"caption"];
     [postRequest addPostValue:originalURL forKey:@"source"];
-    [postRequest addPostValue:permalink forKey:@"link"];    
-    [postRequest startAsynchronous];   
+    [postRequest addPostValue:permalink forKey:@"link"];
+    [postRequest startAsynchronous];
 }
 
 #pragma mark -
@@ -275,6 +279,82 @@
         [delegate tumblrPostStatus:NO];
     
     request.delegate = nil;
+}
+
+#pragma mark -
+#pragma mark Avatar
+
+-(void)requestAvatar
+{
+    OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kTumblrConsumerKey
+                                                    secret:kTumblrConsumerSecret];
+    
+    TumblrUser *tumblrUser = [Utils currentUser];
+    NSString *username = (tumblrUser!=nil)?tumblrUser.username:@"";
+    NSString *requestUrl = [NSString stringWithFormat:@"http://api.tumblr.com/v2/blog/%@.tumblr.com/avatar", username];
+    
+    OAToken *authToken = [[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:kTumblrAccessTokenDefaultsKey prefix:@"TumblrConnect"];
+    
+    OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:requestUrl]
+                                                                   consumer:consumer
+                                                                      token:authToken
+                                                                      realm:nil   // our service provider doesn't specify a realm
+                                                          signatureProvider:nil]; // use the default method, HMAC-SHA1
+    [consumer release];
+    [authToken release];
+    
+    [request setHTTPMethod:@"GET"];
+    
+    [request setParameters:[NSArray arrayWithObjects:
+                            [OARequestParameter requestParameterWithName:@"size" value:kTumblrAvatarSize],
+                            nil]];
+    
+    
+    OADataFetcher *fetcher = [[OADataFetcher alloc] init];
+    
+    [fetcher fetchDataWithRequest:request
+                         delegate:self
+                didFinishSelector:@selector(avatarTicket:didFinishWithData:)
+                  didFailSelector:@selector(avatarTicket:didFailWithError:)];
+}
+
+- (void)avatarTicket:(OAServiceTicket *)ticket didFinishWithData:(NSData *)data
+{
+    if (ticket.didSucceed)
+    {
+        if(delegate && [delegate respondsToSelector:@selector(tumblrAvatarStatus:)])
+        {
+            // parse info
+            
+            UIImage *image = [UIImage imageWithData:data];
+            if(image)
+            {
+                //NSString *responseBody = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                //NSString *imageUrl = [ResponseParser parseTumblrAvatarResponse:responseBody];
+                TumblrUser *tumblrUser = [Utils currentUser];
+                if(tumblrUser)
+                {
+                    tumblrUser.image = image;
+                    [Utils saveCurrentUser:tumblrUser];
+                    [delegate tumblrAvatarStatus:YES];
+                }
+                else
+                {
+                    [delegate tumblrAvatarStatus:NO];
+                }
+            }
+        }
+    }
+}
+
+- (void)avatarTicket:(OAServiceTicket *)ticket didFailWithError:(NSError*)error
+{
+    NSLog(@"Tumblr Request Token Failed - %@", error.description);
+    
+    if(delegate && [delegate respondsToSelector:@selector(tumblrAvatarStatus:)])
+    {
+        [delegate tumblrAvatarStatus:NO];
+    }
 }
 
 #pragma mark -

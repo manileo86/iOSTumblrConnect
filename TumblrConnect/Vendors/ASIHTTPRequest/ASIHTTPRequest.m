@@ -1818,7 +1818,6 @@ static NSOperationQueue *sharedQueue = nil;
 }
 #endif
 
-
 + (void)performSelector:(SEL)selector onTarget:(id *)target withObject:(id)object amount:(void *)amount callerToRetain:(id)callerToRetain
 {
 	if ([*target respondsToSelector:selector]) {
