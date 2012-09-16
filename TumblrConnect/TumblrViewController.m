@@ -15,6 +15,7 @@
 @end
 
 @implementation TumblrViewController
+@synthesize loadingView;
 
 @synthesize webView, loadingIndicatorView, delegate;
 
@@ -36,7 +37,7 @@
     
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-
+    
     tumblrUtil = [[TumblrUtil alloc] initWithDelegate:self];
     [tumblrUtil logout];
     [tumblrUtil requestOAuthToken];
@@ -57,11 +58,13 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
+    loadingView.userInteractionEnabled = YES;
     [loadingIndicatorView startAnimating];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    loadingView.userInteractionEnabled = NO;
     [loadingIndicatorView stopAnimating];
 }
 
@@ -114,7 +117,7 @@
 }
 
 -(void)accessTokenStatus:(BOOL)status
-{    
+{
     if(delegate && [delegate respondsToSelector:@selector(tumblrAuthenticationStatus:)])
     {
         [delegate tumblrAuthenticationStatus:status];
@@ -149,10 +152,11 @@
 {
     NSLog(@"TumblrViewController : viewDidUnload");
     
+    [self setLoadingView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-
+    
     self.webView = nil;
     self.loadingIndicatorView = nil;
 }
@@ -164,6 +168,7 @@
     delegate = nil;
     [webView release];
     [loadingIndicatorView release];
+    [loadingView release];
     [super dealloc];
 }
 

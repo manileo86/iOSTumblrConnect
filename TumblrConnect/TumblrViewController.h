@@ -22,6 +22,7 @@
 
 @property(nonatomic, retain) IBOutlet UIWebView *webView;
 @property(nonatomic, retain) IBOutlet UIActivityIndicatorView *loadingIndicatorView;
+@property (retain, nonatomic) IBOutlet UIView *loadingView;
 @property(nonatomic, assign) id<TumblrViewControllerDelegate> delegate;
 
 - (IBAction)cancelPressed;

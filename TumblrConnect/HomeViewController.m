@@ -80,7 +80,6 @@
 
 -(void)showSuccessfulLogin
 {
-    [loginButton setTitle:@"Logout" forState:UIControlStateNormal];
     [usernameLabel setText:[TumblrUtil getBlogName]];
     loggedInAsLabel.alpha = 1.0;
     usernameLabel.alpha = 1.0;
@@ -88,13 +87,14 @@
                      animations:^{
                          loginButton.frame = CGRectMake(116, 316, 88, 37);
                          loggedInAsLabel.frame = CGRectMake(124, 252, 80, 21);
-                         usernameLabel.frame = CGRectMake(38, 278, 235, 25);
+                         usernameLabel.frame = CGRectMake(38, 275, 235, 25);
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.2
                                           animations:^{
                                               loggedInAsLabel.frame = CGRectMake(120, 252, 80, 21);
-                                              usernameLabel.frame = CGRectMake(43, 278, 235, 25);
+                                              usernameLabel.frame = CGRectMake(43, 275, 235, 25);
+                                              [loginButton setTitle:@"Logout" forState:UIControlStateNormal];
                                           }];
                      }];
     
@@ -103,20 +103,22 @@
 
 -(void)logoutAction
 {
-    [loginButton setTitle:@"Login" forState:UIControlStateNormal];
     [UIView animateWithDuration:0.2
                      animations:^{
                          loggedInAsLabel.frame = CGRectMake(124, 252, 80, 21);
-                         usernameLabel.frame = CGRectMake(38, 278, 235, 25);
+                         usernameLabel.frame = CGRectMake(38, 275, 235, 25);
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.45
                                           animations:^{
                                               loginButton.frame = CGRectMake(116, 259, 88, 37);
                                               loggedInAsLabel.frame = CGRectMake(-80, 252, 80, 21);
-                                              usernameLabel.frame = CGRectMake(320, 278, 235, 25);
+                                              usernameLabel.frame = CGRectMake(320, 275, 235, 25);
                                               loggedInAsLabel.alpha = 0;
                                               usernameLabel.alpha = 0;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              [loginButton setTitle:@"Login" forState:UIControlStateNormal];
                                           }];
                      }];
     
@@ -124,10 +126,12 @@
     [TumblrUtil setTumblrConfigured:NO];
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
     [loginButton release];
     [loggedInAsLabel release];
     [usernameLabel release];
     [super dealloc];
 }
+
 @end
