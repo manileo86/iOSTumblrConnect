@@ -12,10 +12,14 @@
 #define kIsTumblrConfigured                        @"isTumblrConfigured"
 #define kIsTumblrOn                                @"isTumblrOn"
 
-#define kTumblrConsumerKey                         @"TYtzdfqltpy3hghRfQ68m5q8jVYRlJQXGIc6JW6mbXGDRj56hZ"
-#define kTumblrConsumerSecret                      @"bbnyOPGP4h79dmJFqTK5l3P3EYUaux9Q97aLf4g4veHdIQ8aUn"
+#error Replace your App Consumer Key 
+#define kTumblrConsumerKey @"PASTE_YOUR_APP_CONSUMER_KEY_HERE"
 
-#define kTumblrAppCallbackURL                      @"http://www.manileo86.com"
+#error Replace your App Consumer Secret Key 
+#define kTumblrConsumerSecret @"PASTE_YOUR_APP_CONSUMER_SECRET_KEY_HERE"
+
+#error Replace your App Callback URL Key 
+#define kTumblrAppCallbackURL @"PASTE_YOUR_APP_CALLBACK_URL_HERE"
 
 #define kTumblrRequestTokenURL                     @"http://www.tumblr.com/oauth/request_token"
 #define kTumblrRequestTokenDefaultsKey             @"tumblr_request_key"
