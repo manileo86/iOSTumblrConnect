@@ -14,4 +14,5 @@
 @property (retain, nonatomic) IBOutlet UIButton *loginButton;
 @property (retain, nonatomic) IBOutlet UILabel *loggedInAsLabel;
 @property (retain, nonatomic) IBOutlet UILabel *usernameLabel;
+@property (retain, nonatomic) IBOutlet UIButton *continueButton;
 @end

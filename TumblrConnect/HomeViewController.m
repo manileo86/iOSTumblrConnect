@@ -24,6 +24,7 @@
 @synthesize loginButton;
 @synthesize loggedInAsLabel;
 @synthesize usernameLabel;
+@synthesize continueButton;
 
 - (void)viewDidLoad
 {
@@ -60,6 +61,7 @@
     [self setLoginButton:nil];
     [self setLoggedInAsLabel:nil];
     [self setUsernameLabel:nil];
+    [self setContinueButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -77,6 +79,11 @@
         [self.navigationController pushViewController:viewController animated:YES];
         [viewController release];
     }
+}
+
+-(IBAction)continuePressed:(id)sender
+{
+    
 }
 
 #pragma mark -
@@ -108,6 +115,7 @@
                          loginButton.frame = CGRectMake(116, 316, 88, 37);
                          loggedInAsLabel.frame = CGRectMake(124, 252, 80, 21);
                          usernameLabel.frame = CGRectMake(38, 275, 235, 25);
+                         continueButton.frame = CGRectMake(116, 404, 88, 37);
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.2
@@ -136,6 +144,7 @@
                                               usernameLabel.frame = CGRectMake(320, 275, 235, 25);
                                               loggedInAsLabel.alpha = 0;
                                               usernameLabel.alpha = 0;
+                                              continueButton.frame = CGRectMake(116, 460, 88, 37);
                                           }
                                           completion:^(BOOL finished) {
                                               [loginButton setTitle:@"Login" forState:UIControlStateNormal];
@@ -151,6 +160,7 @@
     [loginButton release];
     [loggedInAsLabel release];
     [usernameLabel release];
+    [continueButton release];
     [super dealloc];
 }
 

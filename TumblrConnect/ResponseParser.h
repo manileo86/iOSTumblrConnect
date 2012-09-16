@@ -6,6 +6,5 @@
 
 + (NSString*)parseTumblrBlogNameResponse:(NSString*)response;
 
-
 @end
 
